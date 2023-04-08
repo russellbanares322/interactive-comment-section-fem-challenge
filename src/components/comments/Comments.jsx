@@ -2,7 +2,7 @@ import React from "react";
 import { MinusIcon, PlusIcon, ReplyIcon } from "../../data/Icons";
 // import CommentInput from "../comment-input/CommentInput";
 
-const Comments = ({ comment, depth }) => {
+const Comments = ({ comment }) => {
   return (
     <div>
       <div className="bg-white h-auto rounded-md mt-3 md:mt-3">
@@ -40,11 +40,13 @@ const Comments = ({ comment, depth }) => {
           </div>
         </div>
       </div>
-      {comment?.replies?.map((comment) => (
-        <div className="w-full md:w-[35rem]" key={comment?.id}>
-          <Comments depth={depth + 10} comment={comment} />
-        </div>
-      ))}
+      <div className="relative md:before:absolute before:left-10 before:top-4 before:h-full before:border-l before:border-light-grayish-blue flex flex-col justify-end items-end">
+        {comment?.replies?.map((comment) => (
+          <div className="w-full md:w-[36rem] pl-0 md:pl-7" key={comment?.id}>
+            <Comments comment={comment} />
+          </div>
+        ))}
+      </div>
       {/* <CommentInput /> */}
     </div>
   );
