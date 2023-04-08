@@ -17,6 +17,10 @@ module.exports = {
         rubik: ["Rubik", "sans-serif"],
       },
     },
+    screens: {
+      sm: "24em",
+      md: "75em",
+    },
   },
   plugins: [],
 };

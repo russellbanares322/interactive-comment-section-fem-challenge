@@ -7,19 +7,17 @@
   body {
     min-height: 100vh;
     display: flex;
-    background-color:'hsl(228, 33%, 97%)',
   }
   #root {
-    display:flex,
-    flex-grow: 1,
-    justify-content:center,
-    align-items:center
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
   }
-  
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
