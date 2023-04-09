@@ -67,7 +67,7 @@ const Comments = ({ comment }) => {
           </div>
         </div>
       </div>
-      <div className="relative md:before:absolute md:before:left-10 md:before:top-7 md:before:h-5/6 md:before:border-l md:before:border-light-grayish-blue flex flex-col justify-end items-end">
+      <div className="relative md:before:absolute md:before:left-10 md:before:top-1 md:before:h-full md:before:border-l md:before:border-light-grayish-blue flex flex-col justify-end items-end">
         {comment?.replies?.map((comment) => (
           <div className="w-full md:w-[36rem] pl-0 md:pl-7" key={comment?.id}>
             <Comments comment={comment} />
