@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { MinusIcon, PlusIcon, ReplyIcon } from "../../data/Icons";
-// import CommentInput from "../comment-input/CommentInput";
+import CommentInput from "../comment-input/CommentInput";
 
 const Comments = ({ comment }) => {
+  const [showInput, setShowInput] = useState(false);
+
+  const commentsID = comment?.id;
+  const replyID = comment?.replies?.map((r) => r?.id);
+
+  const handleSelectReply = (selectedID) => {
+    if (selectedID === commentsID || selectedID === replyID) {
+      setShowInput(true);
+    }
+    console.log(selectedID);
+  };
+
   return (
     <div>
       <div className="bg-white h-auto rounded-md mt-3 md:mt-3">
@@ -25,7 +37,10 @@ const Comments = ({ comment }) => {
                   {comment?.createdAt}
                 </p>
               </div>
-              <button className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2">
+              <button
+                onClick={() => handleSelectReply(comment?.id)}
+                className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2"
+              >
                 <ReplyIcon />
                 Reply
               </button>
@@ -40,14 +55,14 @@ const Comments = ({ comment }) => {
           </div>
         </div>
       </div>
-      <div className="relative md:before:absolute before:left-10 before:top-4 before:h-full before:border-l before:border-light-grayish-blue flex flex-col justify-end items-end">
+      <div className="relative md:before:absolute md:before:left-10 md:before:top-4 md:before:h-5/6 md:before:border-l md:before:border-light-grayish-blue flex flex-col justify-end items-end">
         {comment?.replies?.map((comment) => (
           <div className="w-full md:w-[36rem] pl-0 md:pl-7" key={comment?.id}>
             <Comments comment={comment} />
           </div>
         ))}
       </div>
-      {/* <CommentInput /> */}
+      {showInput && <CommentInput />}
     </div>
   );
 };
