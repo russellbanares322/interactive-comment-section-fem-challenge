@@ -1,28 +1,45 @@
+import moment from "moment";
 import React, { useState } from "react";
-import { MinusIcon, PlusIcon, ReplyIcon } from "../../data/Icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  MinusIcon,
+  PlusIcon,
+  ReplyIcon,
+} from "../../data/Icons";
 import CommentInput from "../comment-input/CommentInput";
 
 const Comments = ({ comment }) => {
   const [showInput, setShowInput] = useState(false);
   const [score, setScore] = useState(comment?.score);
+  const commentsID = comment?.id;
+  const replyID = comment?.replies?.map((r) => r?.id);
+  const currentUser = comment?.user?.username === "juliusomo";
+
+  const [replyInput, setReplyInput] = useState({
+    id: replyID + 1,
+    content: "",
+    createdAt: moment().fromNow(),
+  });
+
+  const handleReplyChange = (e) => {
+    setReplyInput({ ...replyInput, [e.target.name]: e.target.value });
+  };
 
   const handleIncrementScore = () => {
     setScore((prev) => prev + 1);
   };
+
   const handleDecrementScore = () => {
     if (score !== 0) {
       setScore((prev) => prev - 1);
     }
   };
 
-  const commentsID = comment?.id;
-  const replyID = comment?.replies?.map((r) => r?.id);
-
   const handleSelectReply = (selectedID) => {
     if (selectedID === commentsID || selectedID === replyID) {
       setShowInput(true);
     }
-    console.log(selectedID);
   };
 
   return (
@@ -45,17 +62,35 @@ const Comments = ({ comment }) => {
                 <p className="text-dark-blue font-medium text-sm">
                   {comment?.user?.username}
                 </p>
+                {currentUser && (
+                  <p className="text-xs text-white bg-moderate-blue px-[5px] py-[0.3px] font-medium rounded-sm">
+                    you
+                  </p>
+                )}
                 <p className="text-sm text-grayish-blue">
                   {comment?.createdAt}
                 </p>
               </div>
-              <button
-                onClick={() => handleSelectReply(comment?.id)}
-                className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2"
-              >
-                <ReplyIcon />
-                Reply
-              </button>
+              {currentUser && (
+                <div className="flex justify-center items-center gap-6">
+                  <button className="flex items-center justify-center text-soft-red text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40">
+                    <DeleteIcon />
+                    Delete
+                  </button>
+                  <button className="flex items-center justify-center text-moderate-blue text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40">
+                    <EditIcon /> Edit
+                  </button>
+                </div>
+              )}
+              {!currentUser && (
+                <button
+                  onClick={() => handleSelectReply(comment?.id)}
+                  className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2 duration-300 ease-in-out hover:opacity-40"
+                >
+                  <ReplyIcon />
+                  Reply
+                </button>
+              )}
             </div>
             <div className="mt-5">
               <p className="text-sm text-grayish-blue">
@@ -67,14 +102,19 @@ const Comments = ({ comment }) => {
           </div>
         </div>
       </div>
-      <div className="relative md:before:absolute md:before:left-10 md:before:top-1 md:before:h-full md:before:border-l md:before:border-light-grayish-blue flex flex-col justify-end items-end">
+      <div className="relative md:before:absolute md:before:left-10 md:before:top-2 md:before:h-full md:before:border-l md:before:border-light-grayish-blue flex flex-col justify-end items-end">
         {comment?.replies?.map((comment) => (
           <div className="w-full md:w-[36rem] pl-0 md:pl-7" key={comment?.id}>
             <Comments comment={comment} />
           </div>
         ))}
       </div>
-      {showInput && <CommentInput />}
+      {showInput && (
+        <CommentInput
+          handleReplyChange={handleReplyChange}
+          replyContent={replyInput.content}
+        />
+      )}
     </div>
   );
 };
