@@ -12,7 +12,8 @@ import CommentInput from "../comment-input/CommentInput";
 
 const Comments = ({ comment }) => {
   const [showInput, setShowInput] = useState(false);
-  const { commentsData, setCommentsData } = useContext(CommentContext);
+  const { handleOpenDeleteModal } = useContext(CommentContext);
+
   const [score, setScore] = useState(comment?.score);
   const commentsID = comment?.id;
   const replyID = comment?.replies?.map((r) => r?.id);
@@ -38,27 +39,17 @@ const Comments = ({ comment }) => {
     }
   };
 
-  const handleSelectReply = (selectedData) => {
-    if (selectedData === commentsID || selectedData === replyID) {
-      setShowInput(true);
+  const handleSelectReply = (selectedCommentID) => {
+    if (selectedCommentID === commentsID || selectedCommentID === replyID) {
+      setShowInput(!showInput);
     }
-  };
-
-  const handleDeleteComment = (selectedID) => {
-    const newData = { ...commentsData };
-    newData?.comments?.filter((comment) => comment?.id !== selectedID) ||
-      delete newData?.comments?.map(({ replies }) =>
-        replies?.map((r) => r?.[selectedID])
-      );
-    setCommentsData(newData);
-    console.log(newData);
   };
 
   return (
     <div>
       <div className="bg-white h-auto rounded-md mt-3 md:mt-3">
         <div className="flex justify-start items-center py-4 px-5 gap-5">
-          <div className="bg-light-gray flex flex-col gap-3 h-full items-center justify-center px-2 py-3 w-8 rounded-md">
+          <div className="hidden md:bg-light-gray md:flex md:flex-col md:gap-3 md:h-full md:items-center md:justify-center md:px-2 md:py-3 md:w-8 md:rounded-md">
             <div className="cursor-pointer" onClick={handleIncrementScore}>
               <PlusIcon />
             </div>
@@ -84,9 +75,9 @@ const Comments = ({ comment }) => {
                 </p>
               </div>
               {currentUser && (
-                <div className="flex justify-center items-center gap-6">
+                <div className="hidden md:flex md:justify-center md:items-center md:gap-6">
                   <button
-                    onClick={() => handleDeleteComment(comment?.id)}
+                    onClick={() => handleOpenDeleteModal(comment?.id)}
                     className="flex items-center justify-center text-soft-red text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40"
                   >
                     <DeleteIcon />
@@ -100,7 +91,7 @@ const Comments = ({ comment }) => {
               {!currentUser && (
                 <button
                   onClick={() => handleSelectReply(comment?.id)}
-                  className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2 duration-300 ease-in-out hover:opacity-40"
+                  className="hidden md:text-sm md:text-moderate-blue md:font-medium md:flex md:justify-center md:items-center md:gap-2 md:duration-300 md:ease-in-out md:hover:opacity-40"
                 >
                   <ReplyIcon />
                   Reply
@@ -108,7 +99,52 @@ const Comments = ({ comment }) => {
               )}
             </div>
             <div className="mt-5">
-              <p className="text-sm text-grayish-blue">{comment?.content}</p>
+              <p
+                className={`text-sm text-grayish-blue ${
+                  comment?.content?.split(" ")?.includes("@") &&
+                  "text-moderate-blue font-medium"
+                }`}
+              >
+                {comment?.content}
+              </p>
+            </div>
+            <div className="md:hidden flex justify-between items-center mt-4">
+              <div className="bg-light-gray flex gap-5 h-8 items-center justify-center px-2 py-3 w-24 rounded-md ">
+                <div className="cursor-pointer" onClick={handleIncrementScore}>
+                  <PlusIcon />
+                </div>
+                <p className="text-moderate-blue font-medium text-sm">
+                  {score}
+                </p>
+                <div className="cursor-pointer" onClick={handleDecrementScore}>
+                  <MinusIcon />
+                </div>
+              </div>
+              <div>
+                {!currentUser && (
+                  <button
+                    onClick={() => handleSelectReply(comment?.id)}
+                    className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2 duration-300 ease-in-out hover:opacity-40"
+                  >
+                    <ReplyIcon />
+                    Reply
+                  </button>
+                )}
+                {currentUser && (
+                  <div className="flex justify-center items-center gap-6">
+                    <button
+                      onClick={() => handleOpenDeleteModal(comment?.id)}
+                      className="flex items-center justify-center text-soft-red text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40"
+                    >
+                      <DeleteIcon />
+                      Delete
+                    </button>
+                    <button className="flex items-center justify-center text-moderate-blue text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40">
+                      <EditIcon /> Edit
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -6,11 +6,18 @@ const CommentContext = createContext();
 
 export const CommentProvider = ({ children }) => {
   const [commentsData, setCommentsData] = useState(data);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const commentID = commentsData?.comments?.map((c) => c?.id).slice(-1);
-
   const [commentsInput, setCommentsInput] = useState({
     content: "",
   });
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   const handleCommentChange = (e) => {
     setCommentsInput({ ...commentsInput, [e.target.name]: e.target.value });
@@ -49,6 +56,9 @@ export const CommentProvider = ({ children }) => {
         setCommentsInput,
         handleCommentChange,
         handleAddComment,
+        isDeleteModalOpen,
+        handleOpenDeleteModal,
+        handleCloseDeleteModal,
       }}
     >
       {children}
