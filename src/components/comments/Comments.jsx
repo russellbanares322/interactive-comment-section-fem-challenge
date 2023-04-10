@@ -1,5 +1,6 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import CommentContext from "../../context/CommentContext";
 import {
   DeleteIcon,
   EditIcon,
@@ -11,6 +12,7 @@ import CommentInput from "../comment-input/CommentInput";
 
 const Comments = ({ comment }) => {
   const [showInput, setShowInput] = useState(false);
+  const { commentsData, setCommentsData } = useContext(CommentContext);
   const [score, setScore] = useState(comment?.score);
   const commentsID = comment?.id;
   const replyID = comment?.replies?.map((r) => r?.id);
@@ -36,10 +38,20 @@ const Comments = ({ comment }) => {
     }
   };
 
-  const handleSelectReply = (selectedID) => {
-    if (selectedID === commentsID || selectedID === replyID) {
+  const handleSelectReply = (selectedData) => {
+    if (selectedData === commentsID || selectedData === replyID) {
       setShowInput(true);
     }
+  };
+
+  const handleDeleteComment = (selectedID) => {
+    const newData = { ...commentsData };
+    newData?.comments?.filter((comment) => comment?.id !== selectedID) ||
+      delete newData?.comments?.map(({ replies }) =>
+        replies?.map((r) => r?.[selectedID])
+      );
+    setCommentsData(newData);
+    console.log(newData);
   };
 
   return (
@@ -73,7 +85,10 @@ const Comments = ({ comment }) => {
               </div>
               {currentUser && (
                 <div className="flex justify-center items-center gap-6">
-                  <button className="flex items-center justify-center text-soft-red text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40">
+                  <button
+                    onClick={() => handleDeleteComment(comment?.id)}
+                    className="flex items-center justify-center text-soft-red text-sm font-medium gap-2 duration-300 ease-in-out hover:opacity-40"
+                  >
                     <DeleteIcon />
                     Delete
                   </button>
