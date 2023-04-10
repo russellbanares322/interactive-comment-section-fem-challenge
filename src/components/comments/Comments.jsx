@@ -108,11 +108,7 @@ const Comments = ({ comment }) => {
               )}
             </div>
             <div className="mt-5">
-              <p className="text-sm text-grayish-blue">
-                Impressive! Though it seems the drag feature could be improved.
-                But overall it looks incredible. You've nailed the design and
-                the responsiveness at various breakpoints works really well.
-              </p>
+              <p className="text-sm text-grayish-blue">{comment?.content}</p>
             </div>
           </div>
         </div>
