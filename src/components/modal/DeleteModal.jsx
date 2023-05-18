@@ -2,7 +2,21 @@ import React, { useContext } from "react";
 import CommentContext from "../../context/CommentContext";
 
 const DeleteModal = () => {
-  const { handleCloseDeleteModal } = useContext(CommentContext);
+  const {
+    handleCloseDeleteModal,
+    selectedCommentId,
+    setCommentsData,
+    setIsDeleteModalOpen,
+    commentsData,
+  } = useContext(CommentContext);
+
+  const handleDeleteComment = () => {
+    const filteredComment = commentsData.comments.filter(
+      (comment) => comment.id !== selectedCommentId
+    );
+    setCommentsData({ ...commentsData, comments: filteredComment });
+    setIsDeleteModalOpen(false);
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-dark-blue bg-opacity-50 z-20">
@@ -19,7 +33,10 @@ const DeleteModal = () => {
           >
             NO, CANCEL
           </button>
-          <button className="text-xs text-white font-medium bg-soft-red w-[6.7rem] h-[2rem] rounded-md">
+          <button
+            onClick={handleDeleteComment}
+            className="text-xs text-white font-medium bg-soft-red w-[6.7rem] h-[2rem] rounded-md"
+          >
             YES, DELETE
           </button>
         </div>

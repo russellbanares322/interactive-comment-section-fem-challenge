@@ -8,11 +8,13 @@ export const CommentProvider = ({ children }) => {
   const [commentsData, setCommentsData] = useState(data);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const commentID = commentsData?.comments?.map((c) => c?.id).slice(-1);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [commentsInput, setCommentsInput] = useState({
     content: "",
   });
 
-  const handleOpenDeleteModal = () => {
+  const handleOpenDeleteModal = (commentId) => {
+    setSelectedCommentId(commentId);
     setIsDeleteModalOpen(true);
   };
   const handleCloseDeleteModal = () => {
@@ -44,7 +46,6 @@ export const CommentProvider = ({ children }) => {
     setCommentsInput({
       content: "",
     });
-    console.log(newComment);
   };
 
   return (
@@ -59,6 +60,8 @@ export const CommentProvider = ({ children }) => {
         isDeleteModalOpen,
         handleOpenDeleteModal,
         handleCloseDeleteModal,
+        selectedCommentId,
+        setIsDeleteModalOpen,
       }}
     >
       {children}

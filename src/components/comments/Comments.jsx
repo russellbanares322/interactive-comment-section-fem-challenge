@@ -160,6 +160,7 @@ const Comments = ({ comment }) => {
         <CommentInput
           handleReplyChange={handleReplyChange}
           replyContent={replyInput.content}
+          setShowInput={setShowInput}
         />
       )}
     </div>

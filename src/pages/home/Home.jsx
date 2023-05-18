@@ -6,6 +6,7 @@ import CommentContext from "../../context/CommentContext";
 
 const Home = () => {
   const { commentsData, isDeleteModalOpen } = useContext(CommentContext);
+  console.log(commentsData);
   return (
     <div>
       {isDeleteModalOpen && <DeleteModal />}
