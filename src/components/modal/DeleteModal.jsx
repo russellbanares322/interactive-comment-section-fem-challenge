@@ -11,10 +11,34 @@ const DeleteModal = () => {
   } = useContext(CommentContext);
 
   const handleDeleteComment = () => {
-    const filteredComment = commentsData.comments.filter(
-      (comment) => comment.id !== selectedCommentId
+    const repliesId = commentsData.comments.map((comment) =>
+      comment.replies.map((reply) => reply.id)
     );
-    setCommentsData({ ...commentsData, comments: filteredComment });
+
+    if (repliesId.includes(selectedCommentId)) {
+      const filteredReplyComment = commentsData.comments.map((comment) =>
+        comment.replies.filter((reply) => reply.id !== selectedCommentId)
+      );
+
+      setCommentsData((prevComments) =>
+        prevComments.comments.map((comment) =>
+          comment.replies.map((reply) =>
+            reply.id === selectedCommentId
+              ? reply
+              : {
+                  ...reply,
+                  ...filteredReplyComment,
+                }
+          )
+        )
+      );
+    } else {
+      const filteredComment = commentsData.comments.filter(
+        (comment) => comment.id !== selectedCommentId
+      );
+      setCommentsData({ ...commentsData, comments: filteredComment });
+    }
+
     setIsDeleteModalOpen(false);
   };
 

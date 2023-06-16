@@ -12,13 +12,12 @@ import CommentInput from "../comment-input/CommentInput";
 
 const Comments = ({ comment }) => {
   const [showInput, setShowInput] = useState(false);
-  const { handleOpenDeleteModal } = useContext(CommentContext);
+  const { handleOpenDeleteModal, setCommentsData, commentsData } =
+    useContext(CommentContext);
 
-  const [score, setScore] = useState(comment?.score);
-  const commentsID = comment?.id;
   const replyID = comment?.replies?.map((r) => r?.id);
   const currentUser = comment?.user?.username === "juliusomo";
-
+  const commentsID = comment?.id;
   const [replyInput, setReplyInput] = useState({
     id: replyID + 1,
     content: "",
@@ -29,14 +28,39 @@ const Comments = ({ comment }) => {
     setReplyInput({ ...replyInput, [e.target.name]: e.target.value });
   };
 
-  const handleIncrementScore = () => {
-    setScore((prev) => prev + 1);
+  const handleIncrementScore = (selectedId) => {
+    const updatedComments = commentsData.comments.map((comment) => {
+      if (comment.id === selectedId) {
+        const updatedScore = comment.score + 1;
+        return {
+          ...comment,
+          score: updatedScore,
+        };
+      }
+      return comment;
+    });
+    setCommentsData({
+      ...commentsData,
+      comments: updatedComments,
+    });
   };
 
-  const handleDecrementScore = () => {
-    if (score !== 0) {
-      setScore((prev) => prev - 1);
-    }
+  const handleDecrementScore = (selectedId) => {
+    const updatedComments = commentsData.comments.map((comment) => {
+      if (comment.id === selectedId) {
+        const updatedScore =
+          comment.score === 0 ? comment.score : comment.score - 1;
+        return {
+          ...comment,
+          score: updatedScore,
+        };
+      }
+      return comment;
+    });
+    setCommentsData({
+      ...commentsData,
+      comments: updatedComments,
+    });
   };
 
   const handleSelectReply = (selectedCommentID) => {
@@ -50,11 +74,19 @@ const Comments = ({ comment }) => {
       <div className="bg-white h-auto rounded-md mt-3 md:mt-3">
         <div className="flex justify-start items-center py-4 px-5 gap-5">
           <div className="hidden md:bg-light-gray md:flex md:flex-col md:gap-3 md:h-full md:items-center md:justify-center md:px-2 md:py-3 md:w-8 md:rounded-md">
-            <div className="cursor-pointer" onClick={handleIncrementScore}>
+            <div
+              className="cursor-pointer"
+              onClick={() => handleIncrementScore(comment.id)}
+            >
               <PlusIcon />
             </div>
-            <p className="text-moderate-blue font-medium text-sm">{score}</p>
-            <div className="cursor-pointer" onClick={handleDecrementScore}>
+            <p className="text-moderate-blue font-medium text-sm">
+              {comment.score}
+            </p>
+            <div
+              className="cursor-pointer"
+              onClick={() => handleDecrementScore(comment.id)}
+            >
               <MinusIcon />
             </div>
           </div>
@@ -114,7 +146,7 @@ const Comments = ({ comment }) => {
                   <PlusIcon />
                 </div>
                 <p className="text-moderate-blue font-medium text-sm">
-                  {score}
+                  {comment.score}
                 </p>
                 <div className="cursor-pointer" onClick={handleDecrementScore}>
                   <MinusIcon />

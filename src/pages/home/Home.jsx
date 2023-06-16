@@ -6,9 +6,9 @@ import CommentContext from "../../context/CommentContext";
 
 const Home = () => {
   const { commentsData, isDeleteModalOpen } = useContext(CommentContext);
-  console.log(commentsData);
   return (
     <div>
+      <pre>{JSON.stringify(commentsData, null, 4)}</pre>
       {isDeleteModalOpen && <DeleteModal />}
       {commentsData?.comments?.map((comment) => (
         <Comments key={comment.id} comment={comment} />

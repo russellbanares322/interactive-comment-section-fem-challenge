@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import CommentContext from "../../context/CommentContext";
 
-const CommentInput = () => {
+const CommentInput = ({ setShowInput }) => {
   const { commentsData, handleCommentChange, commentsInput, handleAddComment } =
     useContext(CommentContext);
   const profile = commentsData?.currentUser?.image?.png;
