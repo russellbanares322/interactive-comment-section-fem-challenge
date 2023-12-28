@@ -1,19 +1,44 @@
-import React, { useContext } from "react";
+import moment from "moment";
+import React, { useContext, useState } from "react";
 import CommentInput from "../../components/comment-input/CommentInput";
 import Comments from "../../components/comments/Comments";
 import DeleteModal from "../../components/modal/DeleteModal";
 import CommentContext from "../../context/CommentContext";
 
 const Home = () => {
-  const { commentsData, isDeleteModalOpen } = useContext(CommentContext);
+  const { commentsData, setCommentsData, isDeleteModalOpen } =
+    useContext(CommentContext);
+  const [commentValue, setCommentValue] = useState("");
+
+  const handleChangeCommentValue = (e) => {
+    setCommentValue(e.target.value);
+  };
+
+  const onSubmit = () => {
+    e.preventDefault();
+    const newComment = {
+      id: +lastCommentId + 1,
+      content: commentValue,
+      createdAt: moment().fromNow(),
+      replies: [],
+      score: 0,
+      user: currentUserData,
+    };
+
+    setCommentsData([...commentsData, newComment]);
+  };
+
   return (
     <div>
-      <pre>{JSON.stringify(commentsData, null, 4)}</pre>
       {isDeleteModalOpen && <DeleteModal />}
-      {commentsData?.comments?.map((comment) => (
+      {commentsData?.map((comment) => (
         <Comments key={comment.id} comment={comment} />
       ))}
-      <CommentInput />
+      <CommentInput
+        commentValue={commentValue}
+        handleChangeCommentValue={handleChangeCommentValue}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 };
