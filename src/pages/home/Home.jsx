@@ -6,15 +6,20 @@ import DeleteModal from "../../components/modal/DeleteModal";
 import CommentContext from "../../context/CommentContext";
 
 const Home = () => {
-  const { commentsData, setCommentsData, isDeleteModalOpen } =
-    useContext(CommentContext);
+  const {
+    commentsData,
+    setCommentsData,
+    isDeleteModalOpen,
+    lastCommentId,
+    currentUserData,
+  } = useContext(CommentContext);
   const [commentValue, setCommentValue] = useState("");
 
   const handleChangeCommentValue = (e) => {
     setCommentValue(e.target.value);
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
     e.preventDefault();
     const newComment = {
       id: +lastCommentId + 1,
