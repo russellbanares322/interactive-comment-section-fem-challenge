@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useContext, useState } from "react";
 import CommentContext from "../../context/CommentContext";
 import {
@@ -10,17 +11,31 @@ import {
 import CommentInput from "../comment-input/CommentInput";
 
 const Comments = ({ comment }) => {
-  const [showInput, setShowInput] = useState(false);
-  const { currentUserData } = useContext(CommentContext);
+  const { currentUserData, commentsData, setCommentsData } =
+    useContext(CommentContext);
   const isCurrentUser =
     comment?.user?.username === currentUserData?.user?.username;
   const [replyCommentOptions, setReplyCommentOptions] = useState({
+    showInput: false,
     replyCommentValue: "",
     selectedCommentId: null,
   });
+  const showReplyButton = comment?.replies !== undefined;
 
-  const handleShowInput = () => {
-    setShowInput(true);
+  const handleShowInput = (replyId) => {
+    setReplyCommentOptions({
+      ...replyCommentOptions,
+      showInput: true,
+      selectedCommentId: replyId,
+    });
+  };
+
+  const handleHideInput = () => {
+    setReplyCommentOptions({
+      showInput: false,
+      replyCommentValue: "",
+      selectedCommentId: null,
+    });
   };
 
   const handleChangeReplyCommentValue = (e) => {
@@ -30,10 +45,41 @@ const Comments = ({ comment }) => {
     });
   };
 
-  const onSubmit = () => {
-    console.log("Submitted");
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const selectedRepliesData = commentsData?.find(
+      (prevComment) => prevComment.id === replyCommentOptions.selectedCommentId
+    )?.replies;
+    const recipientName = commentsData?.find(
+      (prevComment) => prevComment.id === replyCommentOptions.selectedCommentId
+    )?.user?.username;
+    const lastReplyId = parseInt(
+      selectedRepliesData.map((reply) => reply.id).slice(-1)
+    );
+
+    const newReply = {
+      id: lastReplyId + 1,
+      content: replyCommentOptions.replyCommentValue,
+      createdAt: moment().fromNow(),
+      score: 0,
+      replyingTo: recipientName,
+      user: currentUserData,
+    };
+
+    setCommentsData((prevComments) =>
+      prevComments.map((prevComment) =>
+        prevComment.id === replyCommentOptions.selectedCommentId
+          ? {
+              ...prevComment,
+              replies: [...prevComment.replies, newReply],
+            }
+          : prevComment
+      )
+    );
+    handleHideInput();
   };
 
+  console.log(commentsData);
   return (
     <div>
       <div className="bg-white h-auto rounded-md mt-3 md:mt-3">
@@ -76,7 +122,7 @@ const Comments = ({ comment }) => {
                   </button>
                 </div>
               )}
-              {!isCurrentUser && (
+              {showReplyButton && !isCurrentUser && (
                 <button
                   onClick={() => handleShowInput(comment?.id)}
                   className="hidden md:text-sm md:text-moderate-blue md:font-medium md:flex md:justify-center md:items-center md:gap-2 md:duration-300 md:ease-in-out md:hover:opacity-40"
@@ -109,8 +155,11 @@ const Comments = ({ comment }) => {
                 </div>
               </div>
               <div>
-                {!isCurrentUser && (
-                  <button className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2 duration-300 ease-in-out hover:opacity-40">
+                {showReplyButton && !isCurrentUser && (
+                  <button
+                    onClick={() => handleShowInput(comment?.id)}
+                    className="text-sm text-moderate-blue font-medium flex justify-center items-center gap-2 duration-300 ease-in-out hover:opacity-40"
+                  >
                     <ReplyIcon />
                     Reply
                   </button>
@@ -138,7 +187,7 @@ const Comments = ({ comment }) => {
           </div>
         ))}
       </div>
-      {showInput && (
+      {replyCommentOptions.showInput && (
         <CommentInput
           handleChangeCommentValue={handleChangeReplyCommentValue}
           commentValue={replyCommentOptions.replyCommentValue}

@@ -7,7 +7,7 @@ export const CommentProvider = ({ children }) => {
   const convertedCommentsData = Object.values(data);
   const currentUserData = convertedCommentsData[0];
   const [commentsData, setCommentsData] = useState(convertedCommentsData[1]);
-  const lastCommentId = commentsData.map((c) => c.id).slice(-1);
+  const lastCommentId = parseInt(commentsData.map((c) => c.id).slice(-1));
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState(null);
 

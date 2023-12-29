@@ -22,7 +22,7 @@ const Home = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     const newComment = {
-      id: +lastCommentId + 1,
+      id: lastCommentId + 1,
       content: commentValue,
       createdAt: moment().fromNow(),
       replies: [],
@@ -31,6 +31,7 @@ const Home = () => {
     };
 
     setCommentsData([...commentsData, newComment]);
+    setCommentValue("");
   };
 
   return (
