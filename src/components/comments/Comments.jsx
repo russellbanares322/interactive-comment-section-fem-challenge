@@ -18,7 +18,7 @@ const Comments = ({ comment }) => {
   const [replyCommentOptions, setReplyCommentOptions] = useState({
     showInput: false,
     replyCommentValue: "",
-    selectedCommentId: null,
+    selectedReplyId: null,
   });
   const showReplyButton = comment?.replies !== undefined;
 
@@ -26,7 +26,7 @@ const Comments = ({ comment }) => {
     setReplyCommentOptions({
       ...replyCommentOptions,
       showInput: true,
-      selectedCommentId: replyId,
+      selectedReplyId: replyId,
     });
   };
 
@@ -34,7 +34,7 @@ const Comments = ({ comment }) => {
     setReplyCommentOptions({
       showInput: false,
       replyCommentValue: "",
-      selectedCommentId: null,
+      selectedReplyId: null,
     });
   };
 
@@ -48,10 +48,10 @@ const Comments = ({ comment }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const selectedRepliesData = commentsData?.find(
-      (prevComment) => prevComment.id === replyCommentOptions.selectedCommentId
+      (prevComment) => prevComment.id === replyCommentOptions.selectedReplyId
     )?.replies;
     const recipientName = commentsData?.find(
-      (prevComment) => prevComment.id === replyCommentOptions.selectedCommentId
+      (prevComment) => prevComment.id === replyCommentOptions.selectedReplyId
     )?.user?.username;
     const lastReplyId = parseInt(
       selectedRepliesData.map((reply) => reply.id).slice(-1)
@@ -68,7 +68,7 @@ const Comments = ({ comment }) => {
 
     setCommentsData((prevComments) =>
       prevComments.map((prevComment) =>
-        prevComment.id === replyCommentOptions.selectedCommentId
+        prevComment.id === replyCommentOptions.selectedReplyId
           ? {
               ...prevComment,
               replies: [...prevComment.replies, newReply],
@@ -79,7 +79,6 @@ const Comments = ({ comment }) => {
     handleHideInput();
   };
 
-  console.log(commentsData);
   return (
     <div>
       <div className="bg-white h-auto rounded-md mt-3 md:mt-3">
